@@ -3,30 +3,7 @@ import { useRef, useState } from 'react';
 
 import EntryTable from './EntryTable';
 import AddEntryDialog from '@/pages/AddEntryDialog.tsx';
-
-const initialEntries: AccountEntry[] = [
-  {
-    id: 0,
-    date: '2025-07-13',
-    category: '소비',
-    description: '점심 식사',
-    amount: 12300,
-  },
-  {
-    id: 1,
-    date: '2025-07-12',
-    category: '소비',
-    description: '버스비',
-    amount: 1500,
-  },
-  {
-    id: 2,
-    date: '2025-07-11',
-    category: '수입',
-    description: '용돈',
-    amount: 50000,
-  },
-];
+import { initialEntries } from '@/dummyData/initialEntries.ts';
 
 const HomePage = () => {
   const [items, setItems] = useState<AccountEntry[]>(initialEntries);
@@ -35,8 +12,6 @@ const HomePage = () => {
   );
 
   const addItem = (entry: Omit<AccountEntry, 'id'>) => {
-    console.log(entry);
-
     const newItem: AccountEntry = {
       id: idRef.current,
       ...entry,
@@ -47,13 +22,22 @@ const HomePage = () => {
     setItems((prev) => [...prev, newItem]);
   };
 
-  const updateItem = (id: number) => {
-    console.log('수정할 id: ', id);
+  const updateItem = (updateEntry: AccountEntry) => {
+    setItems(items =>
+      items.map(item =>
+        item.id === updateEntry.id ?
+          {
+            ...item,
+            date: updateEntry.date,
+            category: updateEntry.category,
+            description: updateEntry.description,
+            amount: updateEntry.amount,
+          } : item
+      )
+    )
   };
 
   const deleteItem = (id: number) => {
-    console.log('삭제할 id: ', id);
-
     setItems(items.filter((item) => item.id !== id));
   };
 

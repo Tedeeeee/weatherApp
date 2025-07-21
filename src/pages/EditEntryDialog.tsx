@@ -1,3 +1,6 @@
+import * as React from 'react';
+import { useState } from 'react';
+
 import {
   Dialog,
   DialogClose,
@@ -8,56 +11,53 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import type { AccountEntry } from '@/types/accountEntry.ts';
+import type { EntryCategory } from '@/types/account.ts';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import type { AccountEntry } from '@/types/accountEntry.ts';
-import * as React from 'react';
-import { useState } from 'react';
-import type { EntryCategory } from '@/types/account.ts';
+} from '@/components/ui/select.tsx';
 
-interface AddEntryProps {
-  onAdd: (item: Omit<AccountEntry, 'id'>) => void;
+interface EditEntryDialogProps {
+  entry: AccountEntry;
+  onSave: (account: AccountEntry) => void;
 }
 
-const AddEntryDialog = ({ onAdd }: AddEntryProps) => {
+const EditEntryDialog = ({ entry, onSave }: EditEntryDialogProps) => {
   const [open, setOpen] = useState(false);
 
-  const [date, setDate] = useState('');
-  const [category, setCategory] = useState<EntryCategory>('소비');
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState<number | ''>('');
+  const [date, setDate] = useState(entry.date);
+  const [category, setCategory] = useState<EntryCategory>(entry.category);
+  const [description, setDescription] = useState(entry.description);
+  const [amount, setAmount] = useState<number | ''>(entry.amount);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!date || !category || !description || amount === '') {
       // validation 작업
       return;
     }
-    onAdd({
+
+    const updateAccount: AccountEntry = {
+      ...entry,
       date,
       category,
       description,
       amount,
-    });
-
+    };
+    onSave(updateAccount);
     setOpen(false);
-    setDate('');
-    setCategory('소비');
-    setDescription('');
-    setAmount('');
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>가계부 입력하기</Button>
+        <Button>수정</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px]">
@@ -124,4 +124,4 @@ const AddEntryDialog = ({ onAdd }: AddEntryProps) => {
   );
 };
 
-export default AddEntryDialog;
+export default EditEntryDialog;

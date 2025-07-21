@@ -1,1 +1,1 @@
-export type EntryCategory = '수입' | '소비';
+export type EntryCategory = '수입' | '소비' | '지출';
